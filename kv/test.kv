@@ -1,0 +1,11 @@
+<MyButton>:
+    ToggleButton:
+        background_normal:''
+        background_down:''
+        background_color:1,1,.8,1
+        border:0,0,0,0
+
+
+        on_state:
+            if self.state == "normal":self.background_color = (1,1,.8,1)
+            else:self.background_color = (.6,.8,.8,1)

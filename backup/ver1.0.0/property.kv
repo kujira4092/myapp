@@ -1,0 +1,327 @@
+<Select>:
+    canvas.before:
+        Color:
+            rgba:.8,.8,.8,1
+        Rectangle:
+            pos:self.pos
+            size:self.size
+    BoxLayout:
+        BoxLayout:
+            orientation:"vertical"
+            BoxLayout:
+                size_hint_y:1
+
+            Label:
+                text:"scenario select"
+                color:0,0,0,1
+                font_size:30
+                size_hint_y:1
+            BoxLayout:
+                orientation:"horizontal"
+                size_hint_y:4
+                BoxLayout:
+                    size_hint_x:3
+                BoxLayout:
+                    size_hint_x:4
+                    Button:
+                        text:"up"
+                        size_hint_x:2
+                        on_press:
+                            root.manager.transition.duration = 0.6
+                            root.manager.current = "slide"
+                            root.manager.transition.direction = "down"
+                    Button:
+                        text:"test1"
+                        size_hint_x:2
+
+                        on_press:
+                            root.manager.transition.duration = 0.6
+                            root.manager.current = "slide"
+                            root.manager.transition.direction = "down"
+                    
+                BoxLayout:
+                    size_hint_x:3
+
+                    
+            Label:
+                size_hint_y:4
+                
+
+
+<Coder>:
+    console:console
+    slider:slider
+    sl_btn:sl_btn
+
+    canvas.before:
+        Color:
+            rgba:.6,.6,.6,1
+        Rectangle:
+            pos:self.pos
+            size:self.size
+
+    BoxLayout:
+        orientation:"vertical"
+        BoxLayout:
+        #comment->make code block 
+            id:view
+            size_hint_y:0.7
+            BoxLayout:
+                size_hint_x:6.7
+                Button:
+                    text:"coding"
+                    font_size:30
+                Button:
+                    text:"simulator"
+                    font_size:22
+                    on_press:
+                        root.manager.current = "simulator"
+                        root.manager.transition.direction = "left"
+
+                Label:
+                    size_hint_x:3.5
+                BoxLayout:
+                    size_hint_x:0.5
+                    padding:10
+                    Button:
+                        text:"?:help"
+                        font_size:25
+                        on_press:
+                            root.set_transition()
+                            root.manager.current = "slide"
+            Label:
+                size_hint_x:3.3
+                text:"History"
+                font_size:40
+                color:1,1,1,1
+                canvas.before:
+                    Color:
+                        rgba:.4,.4,.4,1
+                    Rectangle:
+                        pos:self.pos
+                        size:self.size
+
+        BoxLayout:
+            orientation:"vertical"
+            size_hint_y:9.3
+            BoxLayout:
+                orientation:"horizontal"
+                BoxLayout:
+                    orientation:"vertical"
+                    size_hint_x:6.7
+                    GridLayout:
+                        cols:1
+                        rows:4
+                        padding:10
+                        spacing:12
+                        size_hint_y:6
+                        Button:
+                            text:"Light Blue"
+                        Button:
+                            text:"Light Red"
+                        Button:
+                            text:"Light Yelow"
+                        Button:
+                            text:"Off"
+                       
+                    BoxLayout:
+                        orientation:"vertical"
+                        size_hint_y:2
+                        BoxLayout:
+                            orientation:"horizontal"
+                            Label:
+                                size_hint_x:0.5
+                            Slider:
+                                id:slider
+                                size_hint_x:7
+                                min:0
+                                max:20
+                                value:5
+                                on_touch_move:root.ev_slider(self)
+                                on_touch_up:root.ev_slider(self)
+                            BoxLayout:
+                                padding:20,40
+                                size_hint_x:2.5
+
+                                Button:
+                                    id:sl_btn
+                                    text:'{:.0f}'.format(slider.value)+"sec  waiting"
+                                    font_size:20
+                    BoxLayout:
+                        size_hint_y:2
+
+                    BoxLayout:
+                        orientation:"horizontal"
+                        size_hint_y:1.5
+                        Label:
+                            id:empty
+                            size_hint_x:4
+                        GridLayout:
+                            cols:3
+                            rows:1
+                            id:opration
+                            spacing:20
+                            padding:20,30
+                            size_hint_x:6
+                            Button:
+                                text:"UNDO"
+                                font_size:20
+                            Button:
+                                text:"RESET"
+                                font_size:20
+                            Button:
+                                text:"BUILD"
+                                font_size:20
+                    
+
+
+                BoxLayout:
+                    orientation:"vertical"
+                    size_hint_x:3.3
+                    BoxLayout:
+                        orientation:"vertical"
+                        padding:25
+                        size_hint_y:9
+                        canvas.before:
+                            Color:
+                                rgba:.4,.4,.4,1
+                            Rectangle:
+                                pos:self.pos
+                                size:self.size
+                        TextInput:
+                            id:console
+                            text:""
+                            readonly:True
+                            font_size:30
+                            foreground_color:1,1,1,1
+                            background_color:0,0,0,1
+                    Button:
+                        text:"Simulate"
+                        size_hint_y:1
+                        font_size:20
+                        on_press:
+                            root.manager.current = "simulator"
+                            root.manager.transition.direction = "left"
+                        
+
+<Simulator>:
+    canvas.before:
+        Color:
+            rgba:.6,.6,.6,1
+        Rectangle:
+            pos:self.pos
+            size:self.size
+    BoxLayout:
+        orientation:"vertical"
+        BoxLayout:
+        #comment->make code block 
+            id:view
+            size_hint_y:0.7
+            BoxLayout:
+                size_hint_x:6.7
+                Button:
+                    text:"coding"
+                    font_size:22
+                    on_press:
+                        root.manager.current = "coder"
+                        root.manager.transition.direction = "right"
+
+                Button:
+                    text:"simulator"
+                    font_size:30
+                Label:
+                    size_hint_x:4
+            BoxLayout:
+                size_hint_x:3.3
+
+        BoxLayout:
+            orientation:"vertical"
+            size_hint_y:9.3
+            padding:40,20
+            BoxLayout:
+                orientation:"vertical"
+                canvas.before:
+                    Color:
+                        rgba:.4,.4,.4,1
+                    Rectangle:
+                        pos:self.pos
+                        size:self.size
+                Label:
+                    text:"Simulator"
+                    font_size:40
+                    size_hint_y:1
+                Label:
+                    id:itext
+                    text:"coding"
+                    size_hint_y:7
+                    canvas.before:
+                        Color:
+                            rgba:0,0,0,1
+                        Rectangle:
+                            pos:self.pos
+                            size:self.size
+                BoxLayout:
+                    TextInput:
+                        size_hint_x:7
+                        readonly:True
+                        font_size:20
+                        foreground_color:1,1,1,1
+                        background_color:0,0,0,1
+                    Button:
+                        text:"start"
+                        font_size:30
+                        on_press:app.stop()
+
+<Slide>:
+    image:image
+    next_btn:next_btn
+    num_of_pages:num_of_pages
+    canvas.before:
+        Color:
+            rgba:.6,.6,.6,1
+        Rectangle:
+            pos:self.pos
+            size:self.size
+    BoxLayout:
+        orientation:"vertical"
+        padding:40
+
+        BoxLayout:
+            size:root.size
+            size_hint_y:9.5
+
+            BoxLayout:
+                size_hint_x:1
+                orientation:"vertical"
+                BoxLayout:
+                    size_hint_y:9
+                Button:
+                    text:"return"
+                    size_hint_y:1
+                    font_size:20
+                    on_press:root.back()
+            Image:
+                id:image
+                source:root.source
+                allow_strech:True
+                size:self.size
+                size_hint_x:8
+
+            BoxLayout:
+                size_hint_x:1
+                orientation:"vertical"
+                BoxLayout:
+                    size_hint_y:9
+                Button:
+                    id:next_btn
+                    text:"next"
+                    size_hint_y:1
+                    font_size:20
+                    on_press:root.next(self),root.change_text()
+        
+        Label:
+            id:num_of_pages
+            text:"1 page"
+            size:root.size
+            size_hint_y:0.5
+            font_size:20

@@ -11,31 +11,14 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import ScreenManager,Screen,NoTransition,SlideTransition
 from kivy.properties import ObjectProperty,ListProperty,StringProperty,NumericProperty
 
-path = "../kv/property.kv"
+path = "kv/property.kv"
 Builder.load_file(path)
-Config.set("graphics","resizable",True)
+Config.set("graphics","resizable",False)
 Config.set("graphics","width",1280)
 Config.set("graphics","height",720)
-#Config.set('graphics', 'window_state', 'maximized')
-
-
-traffic_setup = ["\tpinMode(2,OUTPUT);\n","\tpinMode(3,OUTPUT);\n","\tpinMode(4,OUTPUT);\n"]
-traffic_code = [
-    "\tdigitalWrite(2,HIGH);\n",
-    "\tdelay(5000);\n",
-    "\tdigitalWrite(2,LOW);\n",
-    "\tdigitalWrite(3,HIGH);\n",
-    "\tdelay(2000);\n",
-    "\tdigitalWrite(3,LOW);\n",
-    "\tdigitalWrite(4,HIGH);\n",
-    "\tdelay(5000);\n",
-    "\tdigitalWrite(4,LOW);\n"]
-
+Config.set('graphics', 'window_state', 'maximized')
 
 import os
-import threading
-
-import build as core
 
 class Coder(Screen):
     def __init__(self,**kwargs):
@@ -70,25 +53,6 @@ class Coder(Screen):
         self.manager.transition.duration = 0.6
         self.manager.transition.direction = "down"
 
-    def build(self,*arg):
-        global traffic_code,traffic_setup
-        core.builder(traffic_setup,traffic_code)
-        core.call_compiler()
-
-    def ev_btn(self,id):#--test
-        global traffic_code
-        if id == 1:
-            traffic_code.append("\tdigitalWrite(2,HIGH);\n")
-        elif id == 2:
-            traffic_code.append("\tdigitalWrite(3,HIGH);\n")
-        elif id == 3:
-            traffic_code.append("\tdigitalWrite(4,HIGH);\n")
-        elif id == 4:
-            traffic_code.append("")
-        print(traffic_code)
-
-        
-        
 class Simulator(Screen):
     def __init__(self,**kwargs):
         super(Simulator,self).__init__(**kwargs)
@@ -148,17 +112,11 @@ class Slide(Screen):
     
 
 class Select(Screen):
-
-    tr_btn = ObjectProperty(None)
-
     def __init__(self,**kwargs):
         super(Select,self).__init__(**kwargs)
-
-    def set_screen(self):
-        if self.tr_btn.text == "traffic":
-            self.coder = Coder(name = "coder")
-            self.slide = Slide(name = "slide",dir_name = "./image")
         
+    pass
+
 
 
 class MainApp(App):
@@ -168,12 +126,13 @@ class MainApp(App):
         self.use_kivy_settings = False
     
     def build(self):            #make widget tree and associate kivy
-        self.sm = ScreenManager()        
-        self.sm.add_widget(Select(name = "select"))
-        self.sm.add_widget(Simulator(name = "simulator"))
-        return self.sm
+        sm = ScreenManager()        
+        sm.add_widget(Select(name = "select"))
+        sm.add_widget(Slide(name = "slide"))
+        sm.add_widget(Coder(name = "coder"))
+        sm.add_widget(Simulator(name = "simulator"))
+        return sm
         
 
 if __name__ == '__main__':
-    
     MainApp().run()
