@@ -11,7 +11,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import ScreenManager,Screen,NoTransition,SlideTransition
 from kivy.properties import ObjectProperty,ListProperty,StringProperty,NumericProperty
 
-path = "../kv/property.kv"
+path = "kv/property.kv"
 Builder.load_file(path)
 Config.set("graphics","resizable",True)
 Config.set("graphics","width",1280)
@@ -20,16 +20,7 @@ Config.set("graphics","height",720)
 
 
 traffic_setup = ["\tpinMode(2,OUTPUT);\n","\tpinMode(3,OUTPUT);\n","\tpinMode(4,OUTPUT);\n"]
-traffic_code = [
-    "\tdigitalWrite(2,HIGH);\n",
-    "\tdelay(5000);\n",
-    "\tdigitalWrite(2,LOW);\n",
-    "\tdigitalWrite(3,HIGH);\n",
-    "\tdelay(2000);\n",
-    "\tdigitalWrite(3,LOW);\n",
-    "\tdigitalWrite(4,HIGH);\n",
-    "\tdelay(5000);\n",
-    "\tdigitalWrite(4,LOW);\n"]
+traffic_code = []
 
 
 import os
@@ -49,13 +40,13 @@ class Coder(Screen):
     sl_btn = ObjectProperty(None)
 
     count = 0
-    def ev_sendmsg(self,arg):
+    def printcsl(self,arg):
         if self.count < 10:
-            data = str(self.count) + ".    " + arg.text
+            data = str(self.count) + ".    " + arg
         elif 10 <= self.count & self.count <100:
-            data = str(self.count) + ".  " + arg.text
+            data = str(self.count) + ".  " + arg
         else:
-            data = str(self.count) + "." + arg.text
+            data = str(self.count) + "." + arg
 
         self.all.append(data)
         self.console.text = "\n".join(self.all) + "\n"
@@ -75,17 +66,33 @@ class Coder(Screen):
         core.builder(traffic_setup,traffic_code)
         core.call_compiler()
 
-    def ev_btn(self,id):#--test
+    def ev_btn(self,state,id):#--test
         global traffic_code
-        if id == 1:
-            traffic_code.append("\tdigitalWrite(2,HIGH);\n")
-        elif id == 2:
-            traffic_code.append("\tdigitalWrite(3,HIGH);\n")
-        elif id == 3:
-            traffic_code.append("\tdigitalWrite(4,HIGH);\n")
-        elif id == 4:
-            traffic_code.append("")
-        print(traffic_code)
+        if state == "normal":
+            if id == 1:
+                traffic_code.append("\tdigitalWrite(2,HIGH);\n")
+                self.printcsl("!")
+            elif id == 2:
+                traffic_code.append("\tdigitalWrite(3,HIGH);\n")
+            elif id == 3:
+                traffic_code.append("\tdigitalWrite(4,HIGH);\n")
+            elif id == 4:
+                traffic_code.append("")
+        if state == "down":
+            if id == 1:
+                traffic_code.append("\tdigitalWrite(2,LOW);\n")
+                self.printcsl("?")
+            elif id == 2:
+                traffic_code.append("\tdigitalWrite(3,LOW);\n")
+            elif id == 3:
+                traffic_code.append("\tdigitalWrite(4,LOW);\n")
+            elif id == 4:
+                traffic_code.append("")
+        print(state)
+
+    def ev_reset(self):
+        global traffic_code
+        traffic_code.clear()
 
         
         

@@ -125,9 +125,10 @@
                         padding:25
                         spacing:30
                         size_hint_y:6
-                        Button:
+                        ToggleButton:
                             text:"Light Blue"
-                            on_press:root.ev_btn()
+                            on_press:
+                                root.ev_btn(self.state,1)
                         Button:
                             text:"Light Red"
                         Button:
@@ -180,6 +181,7 @@
                             Button:
                                 text:"RESET"
                                 font_size:20
+                                on_press:root.ev_reset()
                             Button:
                                 text:"BUILD"
                                 font_size:20
@@ -311,7 +313,7 @@
                     text:"return"
                     size_hint_y:1
                     font_size:20
-                    on_press:root.back()
+                    on_press:root.back(),root.change_text()
             Image:
                 id:image
                 source:root.source
