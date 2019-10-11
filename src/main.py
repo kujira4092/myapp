@@ -24,13 +24,11 @@ traffic_code = []
 
 
 import os
-import threading
-
 import build as core
 
-class Coder(Screen):
+class Coder_t(Screen):
     def __init__(self,**kwargs):
-        super(Coder,self).__init__(**kwargs)
+        super(Coder_t,self).__init__(**kwargs)
         pass
     
     all = ListProperty()
@@ -64,30 +62,30 @@ class Coder(Screen):
     def build(self,*arg):
         global traffic_code,traffic_setup
         core.builder(traffic_setup,traffic_code)
-        core.call_compiler()
+        #core.call_compiler()
 
     def ev_btn(self,state,id):#--test
         global traffic_code
+        if state == "down" and id == 1:
+            traffic_code.append("\tdigitalWrite(2,HIGH);\n")
+            self.printcsl("Blue LED ON")
+        elif state == "down" and id == 2:
+            traffic_code.append("\tdigitalWrite(3,HIGH);\n")
+            self.printcsl("Yelow LED ON")
+        elif state == "down" and id == 3:
+            traffic_code.append("\tdigitalWrite(4,HIGH);\n")
+            self.printcsl("Red LED ON")
         if state == "normal":
             if id == 1:
-                traffic_code.append("\tdigitalWrite(2,HIGH);\n")
-                self.printcsl("!")
-            elif id == 2:
-                traffic_code.append("\tdigitalWrite(3,HIGH);\n")
-            elif id == 3:
-                traffic_code.append("\tdigitalWrite(4,HIGH);\n")
-            elif id == 4:
-                traffic_code.append("")
-        if state == "down":
-            if id == 1:
                 traffic_code.append("\tdigitalWrite(2,LOW);\n")
-                self.printcsl("?")
+                self.printcsl("Blue LED OFF")
             elif id == 2:
                 traffic_code.append("\tdigitalWrite(3,LOW);\n")
+                self.printcsl("Yelow LED OFF")
             elif id == 3:
                 traffic_code.append("\tdigitalWrite(4,LOW);\n")
-            elif id == 4:
-                traffic_code.append("")
+                self.printcsl("Red LED OFF")
+
         print(state)
 
     def ev_reset(self):
@@ -163,7 +161,7 @@ class Select(Screen):
 
     def set_screen(self):
         if self.tr_btn.text == "traffic":
-            self.coder = Coder(name = "coder")
+            self.coder = Coder_t(name = "coder")
             self.slide = Slide(name = "slide",dir_name = "./image")
         
 

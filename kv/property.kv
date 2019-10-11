@@ -58,7 +58,7 @@
                 
 
 
-<Coder>:
+<Coder_t>:
     console:console
     slider:slider
     sl_btn:sl_btn
@@ -120,21 +120,26 @@
                     orientation:"vertical"
                     size_hint_x:6.7
                     GridLayout:
-                        cols:1
-                        rows:4
+                        cols:3
+                        rows:1
                         padding:25
                         spacing:30
                         size_hint_y:6
                         ToggleButton:
+                            group:"traffic１"
                             text:"Light Blue"
                             on_press:
                                 root.ev_btn(self.state,1)
-                        Button:
-                            text:"Light Red"
-                        Button:
+                        ToggleButton:
+                            group:"traffic２"
                             text:"Light Yelow"
-                        Button:
-                            text:"Off"
+                            on_press:
+                                root.ev_btn(self.state,2)
+                        ToggleButton:
+                            group:"traffic３"
+                            text:"Light Red"
+                            on_press:
+                                root.ev_btn(self.state,3)
                        
                     BoxLayout:
                         orientation:"vertical"
