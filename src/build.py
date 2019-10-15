@@ -15,11 +15,11 @@ elif platform.system() == os_list[2]:
     print(username)
 
 def builder(setup_list,code_list):
-    if not os.path.exists(dir):
-        os.makedirs(dir)
+    #if not os.path.exists(dir):
+    #    os.makedirs(dir)
 
-    path = dir + "/myapp.ino"
-
+    #path = dir + "/myapp.ino"
+    path = "test/myapp.ino"
     f = open(path,'w')
 
     f.write("void setup(){\n")

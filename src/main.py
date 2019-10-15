@@ -21,6 +21,7 @@ Config.set("graphics","height",720)
 
 traffic_setup = ["\tpinMode(2,OUTPUT);\n","\tpinMode(3,OUTPUT);\n","\tpinMode(4,OUTPUT);\n"]
 traffic_code = []
+t_code_buf = []
 
 
 import os
@@ -37,7 +38,7 @@ class Coder_t(Screen):
     slider = ObjectProperty(None)
     sl_btn = ObjectProperty(None)
 
-    count = 0
+    count = 1
     def printcsl(self,arg):
         if self.count < 10:
             data = str(self.count) + ".    " + arg
@@ -51,7 +52,7 @@ class Coder_t(Screen):
         self.count += 1
 
     def ev_slider(self,*arg):
-        self.sl_btn.text = str(int(self.slider.value)) + "sec  waiting"
+        self.sl_btn.text = str('{:.0f}'.format(int(self.slider.value))) + " sec waiting"
         pass
     
     def set_transition(self):
@@ -87,10 +88,23 @@ class Coder_t(Screen):
                 self.printcsl("Red LED OFF")
 
         print(state)
+        print(traffic_code)
 
     def ev_reset(self):
         global traffic_code
         traffic_code.clear()
+        self.all.clear()
+        self.count = 1
+        self.console.text = ""
+        print(traffic_code)
+
+        
+
+    def ev_slbtn(self,value,text):
+        global traffic_code
+        self.printcsl(text)
+        traffic_code.append("\tdelay("+str(value)+"000);\n")
+        
 
         
         

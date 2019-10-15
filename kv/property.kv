@@ -47,6 +47,11 @@
                         size_hint_x:2
 
                         on_press:
+                            root.set_screen()
+                            app.sm.add_widget(root.coder)
+                            root.manager.current = "coder"
+                            root.manager.transition.duration = 0.6
+                            root.manager.transition.direction = "down"
                             
                     
                 BoxLayout:
@@ -162,8 +167,11 @@
 
                                 Button:
                                     id:sl_btn
-                                    text:'{:.0f}'.format(slider.value)+"sec  waiting"
-                                    font_size:20
+                                    text:'{:.0f}'.format(int(slider.value)) + " sec waiting"
+                                    font_size:30
+                                    value_track:True
+                                    on_press:
+                                        root.ev_slbtn('{:.0f}'.format(int(slider.value)),self.text)
                     BoxLayout:
                         size_hint_y:2
 
@@ -190,7 +198,8 @@
                             Button:
                                 text:"BUILD"
                                 font_size:20
-                                on_press:root.build()
+                                on_press:
+                                    root.build()
                     
 
 
