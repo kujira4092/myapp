@@ -131,18 +131,18 @@
                         spacing:30
                         size_hint_y:6
                         ToggleButton:
-                            group:"traffic１"
-                            text:"Light Blue"
+                            id:traffic１
+                            text:"Blue LED"
                             on_press:
                                 root.ev_btn(self.state,1)
                         ToggleButton:
-                            group:"traffic２"
-                            text:"Light Yelow"
+                            id:traffic２
+                            text:"Yelow LED"
                             on_press:
                                 root.ev_btn(self.state,2)
                         ToggleButton:
-                            group:"traffic３"
-                            text:"Light Red"
+                            id:traffic３
+                            text:"Red LED"
                             on_press:
                                 root.ev_btn(self.state,3)
                        
@@ -191,6 +191,8 @@
                             Button:
                                 text:"UNDO"
                                 font_size:20
+                                on_press:
+                                    root.ev_undo()
                             Button:
                                 text:"RESET"
                                 font_size:20

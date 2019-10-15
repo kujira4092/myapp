@@ -19,12 +19,11 @@ Config.set("graphics","height",720)
 #Config.set('graphics', 'window_state', 'maximized')
 
 
-traffic_setup = ["\tpinMode(2,OUTPUT);\n","\tpinMode(3,OUTPUT);\n","\tpinMode(4,OUTPUT);\n"]
-traffic_code = []
-t_code_buf = []
+
 
 
 import os
+import copy
 import build as core
 
 class Coder_t(Screen):
@@ -32,11 +31,15 @@ class Coder_t(Screen):
         super(Coder_t,self).__init__(**kwargs)
         pass
     
-    all = ListProperty()
-
+    all = ListProperty([])
+    buf = ListProperty([])
     console = ObjectProperty(None)
     slider = ObjectProperty(None)
     sl_btn = ObjectProperty(None)
+
+    traffic_setup = ["\tpinMode(2,OUTPUT);\n","\tpinMode(3,OUTPUT);\n","\tpinMode(4,OUTPUT);\n"]
+    traffic_code = []
+    t_code_buf = []
 
     count = 1
     def printcsl(self,arg):
@@ -47,7 +50,10 @@ class Coder_t(Screen):
         else:
             data = str(self.count) + "." + arg
 
+        self.buf = copy.copy(self.all)
         self.all.append(data)
+        print(data)
+        print(self.all)
         self.console.text = "\n".join(self.all) + "\n"
         self.count += 1
 
@@ -61,50 +67,68 @@ class Coder_t(Screen):
         self.manager.transition.direction = "down"
 
     def build(self,*arg):
-        global traffic_code,traffic_setup
-        core.builder(traffic_setup,traffic_code)
+        core.builder(self.traffic_setup,self.traffic_code)
         #core.call_compiler()
 
     def ev_btn(self,state,id):#--test
-        global traffic_code
         if state == "down" and id == 1:
-            traffic_code.append("\tdigitalWrite(2,HIGH);\n")
+            self.t_code_buf = copy.deepcopy(self.traffic_code)
+            self.traffic_code.append("\tdigitalWrite(2,HIGH);\n")
             self.printcsl("Blue LED ON")
         elif state == "down" and id == 2:
-            traffic_code.append("\tdigitalWrite(3,HIGH);\n")
+            self.t_code_buf = copy.deepcopy(self.traffic_code)
+            self.traffic_code.append("\tdigitalWrite(3,HIGH);\n")
             self.printcsl("Yelow LED ON")
         elif state == "down" and id == 3:
-            traffic_code.append("\tdigitalWrite(4,HIGH);\n")
+            self.t_code_buf = copy.deepcopy(self.traffic_code)
+            self.traffic_code.append("\tdigitalWrite(4,HIGH);\n")
             self.printcsl("Red LED ON")
-        if state == "normal":
-            if id == 1:
-                traffic_code.append("\tdigitalWrite(2,LOW);\n")
-                self.printcsl("Blue LED OFF")
-            elif id == 2:
-                traffic_code.append("\tdigitalWrite(3,LOW);\n")
-                self.printcsl("Yelow LED OFF")
-            elif id == 3:
-                traffic_code.append("\tdigitalWrite(4,LOW);\n")
-                self.printcsl("Red LED OFF")
+        if state == "normal" and id == 1:
+            self.t_code_buf = copy.deepcopy(self.traffic_code)
+            self.traffic_code.append("\tdigitalWrite(2,LOW);\n")
+            self.printcsl("Blue LED OFF")
+        elif state == "normal" and id == 2:
+            self.t_code_buf = copy.deepcopy(self.traffic_code)
+            self.traffic_code.append("\tdigitalWrite(3,LOW);\n")
+            self.printcsl("Yelow LED OFF")
+        elif state == "normal" and id == 3:
+            self.t_code_buf = copy.deepcopy(self.traffic_code)
+            self.traffic_code.append("\tdigitalWrite(4,LOW);\n")
+            self.printcsl("Red LED OFF")
 
         print(state)
-        print(traffic_code)
+        print(self.traffic_code)
+        print(self.t_code_buf)
 
     def ev_reset(self):
-        global traffic_code
-        traffic_code.clear()
+        self.t_code_buf = copy.deepcopy(self.traffic_code)
+        self.traffic_code.clear()
+        self.buf = copy.copy(self.all)
         self.all.clear()
         self.count = 1
         self.console.text = ""
-        print(traffic_code)
-
-        
 
     def ev_slbtn(self,value,text):
-        global traffic_code
         self.printcsl(text)
-        traffic_code.append("\tdelay("+str(value)+"000);\n")
+        self.t_code_buf = copy.deepcopy(self.traffic_code)        
+        self.traffic_code.append("\tdelay("+str(value)+"000);\n")
+
+    def ev_undo(self):
+        buffer = copy.deepcopy(self.traffic_code)
+        self.traffic_code = copy.deepcopy(self.t_code_buf)
+        self.t_code_buf = copy.deepcopy(buffer)
+
+        listbuf = copy.copy(self.all)
+        self.all = copy.copy(self.buf)
+        self.buf = copy.copy(listbuf)
+
+        self.console.text = ""
+        self.console.text = "\n".join(self.all) + "\n"
         
+        print(self.all)
+        print(self.buf)
+        
+
 
         
         
@@ -112,6 +136,8 @@ class Simulator(Screen):
     def __init__(self,**kwargs):
         super(Simulator,self).__init__(**kwargs)
         pass
+
+
 
 class Slide(Screen):
     source = StringProperty("")
