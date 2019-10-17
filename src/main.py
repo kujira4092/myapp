@@ -41,7 +41,8 @@ class Coder_t(Screen):
     traffic_code = []
     t_code_buf = []
 
-    count = 1
+    count = count_b = 1
+
     def printcsl(self,arg):
         if self.count < 10:
             data = str(self.count) + ".    " + arg
@@ -52,9 +53,8 @@ class Coder_t(Screen):
 
         self.buf = copy.copy(self.all)
         self.all.append(data)
-        print(data)
-        print(self.all)
         self.console.text = "\n".join(self.all) + "\n"
+        self.count_b = self.count
         self.count += 1
 
     def ev_slider(self,*arg):
@@ -97,14 +97,14 @@ class Coder_t(Screen):
             self.printcsl("Red LED OFF")
 
         print(state)
-        print(self.traffic_code)
-        print(self.t_code_buf)
+
 
     def ev_reset(self):
         self.t_code_buf = copy.deepcopy(self.traffic_code)
         self.traffic_code.clear()
         self.buf = copy.copy(self.all)
         self.all.clear()
+        self.count_b = self.count
         self.count = 1
         self.console.text = ""
 
@@ -122,11 +122,14 @@ class Coder_t(Screen):
         self.all = copy.copy(self.buf)
         self.buf = copy.copy(listbuf)
 
+        c_buf = self.count
+        self.count = self.count_b
+        self.count_b = c_buf
+
+
         self.console.text = ""
         self.console.text = "\n".join(self.all) + "\n"
-        
-        print(self.all)
-        print(self.buf)
+
         
 
 
