@@ -9,7 +9,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import ScreenManager,Screen,NoTransition,SlideTransition
-from kivy.properties import ObjectProperty,ListProperty,StringProperty,NumericProperty
+from kivy.properties import ObjectProperty,ListProperty,StringProperty,NumericProperty,OptionProperty
 
 path = "kv/property.kv"
 Builder.load_file(path)
@@ -37,11 +37,21 @@ class Coder_t(Screen):
     slider = ObjectProperty(None)
     sl_btn = ObjectProperty(None)
 
-    traffic_setup = ["\tpinMode(2,OUTPUT);\n","\tpinMode(3,OUTPUT);\n","\tpinMode(4,OUTPUT);\n"]
-    traffic_code = []
-    t_code_buf = []
+    traffic1 = ObjectProperty(None)
+    traffic2 = ObjectProperty(None)
+    traffic3 = ObjectProperty(None)
 
-    count = count_b = 1
+    state_flag = []
+    state_buffer = []                  #None = 0,B_ON/OFF = 1/2 ...
+
+    setup = ["\tpinMode(2,OUTPUT);\n","\tpinMode(3,OUTPUT);\n","\tpinMode(4,OUTPUT);\n"]
+    command_list = []
+    command_buffer = []
+
+    count = count_buffer = 1
+
+    reset_flag = False
+    button_pattern = []
 
     def printcsl(self,arg):
         if self.count < 10:
@@ -51,13 +61,15 @@ class Coder_t(Screen):
         else:
             data = str(self.count) + "." + arg
 
-        self.buf = copy.copy(self.all)
         self.all.append(data)
-        self.console.text = "\n".join(self.all) + "\n"
-        self.count_b = self.count
-        self.count += 1
+        self.buf = copy.copy(self.all)
 
-    def ev_slider(self,*arg):
+        self.console.text = "\n".join(self.all) + "\n"
+        
+        self.count += 1
+        self.count_buffer = self.count
+
+    def event_slider(self,*arg):
         self.sl_btn.text = str('{:.0f}'.format(int(self.slider.value))) + " sec waiting"
         pass
     
@@ -67,68 +79,158 @@ class Coder_t(Screen):
         self.manager.transition.direction = "down"
 
     def build(self,*arg):
-        core.builder(self.traffic_setup,self.traffic_code)
+        core.builder(self.setup,self.command_list)
         #core.call_compiler()
 
-    def ev_btn(self,state,id):#--test
+    def event_btn(self,state,id):#--test
+
         if state == "down" and id == 1:
-            self.t_code_buf = copy.deepcopy(self.traffic_code)
-            self.traffic_code.append("\tdigitalWrite(2,HIGH);\n")
+            self.state_flag.append(1)
+            self.command_list.append("\tdigitalWrite(2,HIGH);\n")
+            self.command_buffer = copy.deepcopy(self.command_list)
             self.printcsl("Blue LED ON")
         elif state == "down" and id == 2:
-            self.t_code_buf = copy.deepcopy(self.traffic_code)
-            self.traffic_code.append("\tdigitalWrite(3,HIGH);\n")
+            self.state_flag.append(2)
+            self.command_list.append("\tdigitalWrite(3,HIGH);\n")
+            self.command_buffer = copy.deepcopy(self.command_list)
+
             self.printcsl("Yelow LED ON")
         elif state == "down" and id == 3:
-            self.t_code_buf = copy.deepcopy(self.traffic_code)
-            self.traffic_code.append("\tdigitalWrite(4,HIGH);\n")
+            self.state_flag.append(3)
+            self.command_list.append("\tdigitalWrite(4,HIGH);\n")
+            self.command_buffer = copy.deepcopy(self.command_list)
+
             self.printcsl("Red LED ON")
         if state == "normal" and id == 1:
-            self.t_code_buf = copy.deepcopy(self.traffic_code)
-            self.traffic_code.append("\tdigitalWrite(2,LOW);\n")
+            self.state_flag.append(4)
+            self.command_list.append("\tdigitalWrite(2,LOW);\n")
+            self.command_buffer = copy.deepcopy(self.command_list)
+
             self.printcsl("Blue LED OFF")
         elif state == "normal" and id == 2:
-            self.t_code_buf = copy.deepcopy(self.traffic_code)
-            self.traffic_code.append("\tdigitalWrite(3,LOW);\n")
+            self.state_flag.append(5)
+            self.command_list.append("\tdigitalWrite(3,LOW);\n")
+            self.command_buffer = copy.deepcopy(self.command_list)
+
             self.printcsl("Yelow LED OFF")
         elif state == "normal" and id == 3:
-            self.t_code_buf = copy.deepcopy(self.traffic_code)
-            self.traffic_code.append("\tdigitalWrite(4,LOW);\n")
+            self.state_flag.append(6)
+            self.command_list.append("\tdigitalWrite(4,LOW);\n")
+            self.command_buffer = copy.deepcopy(self.command_list)
+
             self.printcsl("Red LED OFF")
 
+        self.state_buffer = copy.deepcopy(self.state_flag)
+        
         print(state)
+        print(self.state_flag)
+        print(self.count)
 
 
-    def ev_reset(self):
-        self.t_code_buf = copy.deepcopy(self.traffic_code)
-        self.traffic_code.clear()
-        self.buf = copy.copy(self.all)
+    def reset(self):
+        self.command_list.clear()
         self.all.clear()
-        self.count_b = self.count
+        self.button_pattern.clear()
+
+        print(self.traffic1.state,self.traffic2.state,self.traffic3.state)
+        self.button_pattern.append(self.traffic1.state)
+        self.button_pattern.append(self.traffic2.state)
+        self.button_pattern.append(self.traffic3.state)
+        self.traffic1.state = "normal"
+        self.traffic2.state = "normal"
+        self.traffic3.state = "normal"
+        self.state_flag.clear()
         self.count = 1
         self.console.text = ""
+        self.reset_flag = True
+        
 
-    def ev_slbtn(self,value,text):
+    def slbtn(self,value,text):
         self.printcsl(text)
-        self.t_code_buf = copy.deepcopy(self.traffic_code)        
-        self.traffic_code.append("\tdelay("+str(value)+"000);\n")
+        print("sl",self.state_flag,self.count)
+        self.state_flag.append(0)
+        self.command_list.append("\tdelay("+str(value)+"000);\n")
+        self.command_buffer = copy.deepcopy(self.command_list)   
+        self.state_buffer = copy.deepcopy(self.state_flag)
 
-    def ev_undo(self):
-        buffer = copy.deepcopy(self.traffic_code)
-        self.traffic_code = copy.deepcopy(self.t_code_buf)
-        self.t_code_buf = copy.deepcopy(buffer)
 
-        listbuf = copy.copy(self.all)
+
+    def replace(self):
+        
+            
+        self.state_flag = copy.deepcopy(self.state_buffer)
+
+        self.command_list = copy.deepcopy(self.command_buffer)
+
         self.all = copy.copy(self.buf)
-        self.buf = copy.copy(listbuf)
 
-        c_buf = self.count
-        self.count = self.count_b
-        self.count_b = c_buf
+        self.count = self.count_buffer
 
+        if self.reset_flag:
+            self.traffic1.state = self.button_pattern[0]
+            self.traffic2.state = self.button_pattern[1]
+            self.traffic3.state = self.button_pattern[2]
+            self.reset_flag = False
+        elif not self.command_list and not self.reset_flag:
+            return
+        else:
+            if self.state_flag[self.count-2]  == 4:
+                self.traffic1.state = "normal"
+            if self.state_flag[self.count-2]  == 5:
+                self.traffic2.state = "normal"
+            if self.state_flag[self.count-2]  == 6:
+                self.traffic3.state = "normal"
+            if self.state_flag[self.count-2]  == 1:
+                self.traffic1.state = "down"
+            if self.state_flag[self.count-2]  == 2:
+                self.traffic2.state = "down"
+            if self.state_flag[self.count-2]  == 3:
+                self.traffic3.state = "down"
+
+
+
+        
+        self.console.text = ""
+        self.console.text = "\n".join(self.all) + "\n"
+
+        print(self.state_flag,self.count)
+        
+
+    def delete(self):
+        if not self.command_list:
+            return
+
+        print(self.state_flag)
+        print(self.count)
+
+        if self.state_flag[self.count-2]  == 1:
+            self.traffic1.state = "normal"
+        if self.state_flag[self.count-2]  == 2:
+            self.traffic2.state = "normal"
+        if self.state_flag[self.count-2]  == 3:
+            self.traffic3.state = "normal"
+        if self.state_flag[self.count-2]  == 4:
+            self.traffic1.state = "down"
+        if self.state_flag[self.count-2]  == 5:
+            self.traffic2.state = "down"
+        if self.state_flag[self.count-2]  == 6:
+            self.traffic3.state = "down"    
+      
+        self.state_buffer = copy.deepcopy(self.state_flag)
+
+        self.command_buffer = copy.deepcopy(self.command_list)
+        self.buf = copy.copy(self.all)
+        self.count_buffer = self.count
+
+        self.state_flag.pop()
+        self.command_list.pop()
+        self.all.pop()
+        self.count -= 1
 
         self.console.text = ""
         self.console.text = "\n".join(self.all) + "\n"
+
+        
 
         
 

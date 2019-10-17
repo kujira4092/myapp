@@ -67,6 +67,9 @@
     console:console
     slider:slider
     sl_btn:sl_btn
+    traffic1:traffic1
+    traffic2:traffic2
+    traffic3:traffic3
 
     canvas.before:
         Color:
@@ -131,20 +134,20 @@
                         spacing:30
                         size_hint_y:6
                         ToggleButton:
-                            id:traffic１
+                            id:traffic1
                             text:"Blue LED"
                             on_press:
-                                root.ev_btn(self.state,1)
+                                root.event_btn(self.state,1)
                         ToggleButton:
-                            id:traffic２
+                            id:traffic2
                             text:"Yelow LED"
                             on_press:
-                                root.ev_btn(self.state,2)
+                                root.event_btn(self.state,2)
                         ToggleButton:
-                            id:traffic３
+                            id:traffic3
                             text:"Red LED"
                             on_press:
-                                root.ev_btn(self.state,3)
+                                root.event_btn(self.state,3)
                        
                     BoxLayout:
                         orientation:"vertical"
@@ -159,8 +162,8 @@
                                 min:0
                                 max:20
                                 value:5
-                                on_touch_move:root.ev_slider(self)
-                                on_touch_up:root.ev_slider(self)
+                                on_touch_move:root.event_slider(self)
+                                on_touch_up:root.event_slider(self)
                             BoxLayout:
                                 padding:20,40
                                 size_hint_x:2.5
@@ -171,7 +174,7 @@
                                     font_size:30
                                     value_track:True
                                     on_press:
-                                        root.ev_slbtn('{:.0f}'.format(int(slider.value)),self.text)
+                                        root.slbtn('{:.0f}'.format(int(slider.value)),self.text)
                     BoxLayout:
                         size_hint_y:2
 
@@ -182,26 +185,35 @@
                             id:empty
                             size_hint_x:4
                         GridLayout:
-                            cols:3
+                            cols:4
                             rows:1
                             id:opration
                             spacing:20
                             padding:20,30
                             size_hint_x:6
+
+                            
                             Button:
-                                text:"UNDO"
+                                text:"DELETE"
                                 font_size:20
                                 on_press:
-                                    root.ev_undo()
+                                    root.delete()
                             Button:
                                 text:"RESET"
                                 font_size:20
-                                on_press:root.ev_reset()
+                                on_press:root.reset()
+
+                            Button:
+                                text:"REPLACE"
+                                font_size:20
+                                on_press:
+                                    root.replace()
                             Button:
                                 text:"BUILD"
                                 font_size:20
                                 on_press:
                                     root.build()
+
                     
 
 
