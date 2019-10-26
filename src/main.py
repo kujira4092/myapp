@@ -155,9 +155,7 @@ class Coder_t(Screen):
 
 
 
-    def replace(self):
-        
-            
+    def replace(self):  
         self.state_flag = copy.deepcopy(self.state_buffer)
 
         self.command_list = copy.deepcopy(self.command_buffer)
