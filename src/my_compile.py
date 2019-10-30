@@ -1,13 +1,21 @@
 import subprocess
+import os
+import time
 
-def uno_compiiler(path):
-    subprocess.Popen(["arduino-cli","core","update-index"])
+def setup():
+    subprocess.run(["arduino-cli","--config-file",".cli-config.yaml","core","update-index"])
 
-    #subprocess.Popen(["arduino-cli","board","list"])
+def compiler(path):
+    subprocess.run(["arduino-cli","compile","--fqbn","arduino:avr:uno",path])
 
-    subprocess.Popen(["arduino-cli","--config-file",".cli-config.yaml",
-                    "compile","-b","arduino:avr:uno",path])
 
-    subprocess.Popen(["arduino-cli","--config-file",".cli-config.yaml",
-                    "upload","-p","/dev/ttyACM0","-b","arduino:avr:uno",path])
+def uploader(path):
+    subprocess.run(["arduino-cli","--config-file",".cli-config.yaml",
+                    "upload","-p","/dev/tty.usbmodem141101","-b","arduino:avr:uno",path])
     
+if __name__ == "__main__":
+    setup()
+    path = os.path.abspath("Arduino/")
+    compiler(path)
+    uploader(path)
+    pass

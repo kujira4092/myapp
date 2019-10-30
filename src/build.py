@@ -3,22 +3,18 @@ import platform
 import getpass
 import my_compile   as comp
 
-os_list = ["Windows","Linux","Darwin"]
-
-if platform.system() == os_list[0]:
+if platform.system() == "Windows":
     pass
-elif platform.system() == os_list[1]:
-    username = getpass.getuser()
-    dir = "/home/"+username+"/Arduino/myapp"
-elif platform.system() == os_list[2]:
-    username = getpass.getuser()
-    print(username)
+elif platform.system() == "Linux":
+    pass
+elif platform.system() == "Darwin":
+    path = os.path.abspath("test/myapp.ino")
+    for file in os.listdir("/dev"):
+        if "cu.usbmodem" in file:
+            port = "/dev/" + file
+            print(port)
 
 def builder(setup_list,code_list):
-    #if not os.path.exists(dir):
-    #    os.makedirs(dir)
-
-    #path = dir + "/myapp.ino"
     path = "test/myapp.ino"
     f = open(path,'w')
 
@@ -31,4 +27,8 @@ def builder(setup_list,code_list):
     f.write("}")
 
 def call_compiler():
-    comp.uno_compiiler(dir)
+    comp.compiler(dir)
+
+def call_uploader():
+    comp.uploader(dir)
+

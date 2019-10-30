@@ -228,7 +228,8 @@ class Coder_t(Screen):
         self.console.text = ""
         self.console.text = "\n".join(self.all) + "\n"
 
-        
+    def upload(self):
+        core.call_uploader()
 
         
 
